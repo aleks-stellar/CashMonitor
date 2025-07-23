@@ -1,0 +1,12 @@
+[tool.poetry]
+name = "CashMonitor"
+version = "0.1.0"
+description = ""
+authors = ["sandroaksyonov@gmail.com"]
+
+[tool.poetry.dependencies]
+python = ">=3.12"
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
