@@ -70,19 +70,53 @@ def get_top_five_transactions(dt_frame: DataFrame) -> list[dict]:
     pass
 
 
-def calculate_user_currency_rates(path_to_user_settings: Path) -> list[dict]:
+def get_user_currency_rate_by_url(
+        url_for_currency_rate: str,
+        api_for_currency_rate: str,
+        currency_from_amount: str,
+        currency_from: str,
+        currency_to: str
+) -> dict:
     """
-    Вычисляет курс валют пользователя.
+    Получает актуальный курс валюты по API.
+    :param url_for_currency_rate: URL для получения актуального курса валюты.
+    :param api_for_currency_rate: API для получения актуального курса валюты.
+    :param currency_from_amount: Сумма в исходной валюте.
+    :param currency_from: Валюта, из которой осуществляется перевод.
+    :param currency_to: Валюта, в которую необходимо перевести.
+    :return: Словарь (ключ - код валюты, значение - результат перевода).
+    """
+    pass
+
+
+def get_user_currency_rates(path_to_user_settings: Path) -> list[dict]:
+    """
+    Получает курс валют пользователя.
     :param path_to_user_settings: Путь к JSON-файлу, в котором хранятся коды валют пользователя.
     :return: Список, в котором каждый словарь дает информацию о текущем курсе валют пользователя.
     """
     pass
 
 
-def calculate_user_stocks_rates(path_to_user_settings: Path) -> list[dict]:
+def get_user_stock_rate_by_url(
+        url_for_stock_rate: str,
+        api_for_stock_rate: str,
+        stock_ticker: str,
+) -> dict:
     """
-    Вычисляет курс акций пользователя из S&P500.
-    :param path_to_user_settings: Путь к JSON-файлу, в котором хранятся тикеты акций пользователя.
+    Получает актуальный курс акции по API.
+    :param url_for_stock_rate: URL для получения актуального курса акции.
+    :param api_for_stock_rate: API для получения актуального курса акции.
+    :param stock_ticker: Тикер акции.
+    :return: Словарь (ключ - тикер, значение - текущая стоимость акции).
+    """
+    pass
+
+
+def get_user_stock_rates(path_to_user_settings: Path) -> list[dict]:
+    """
+    Получает текущий курс акций пользователя из S&P500.
+    :param path_to_user_settings: Путь к JSON-файлу, в котором хранятся тикеры акций пользователя.
     :return: Список, в котором каждый словарь дает информацию о текущем курсе акций пользователя.
     """
     pass
