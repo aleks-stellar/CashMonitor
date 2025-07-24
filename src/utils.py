@@ -5,13 +5,18 @@ from pandas import DataFrame
 from datetime import datetime
 
 
-def get_dataframe_from_excel(path_to_excel: Path) -> DataFrame:
+def get_dataframe_from_excel(path_to_excel: Path) -> DataFrame | None:
     """
     Читает EXCEL-файл и конвертирует его в DataFrame.
     :param path_to_excel: Путь к EXCEL-файлу.
     :return: DataFrame с данными о транзакциях.
     """
-    pass
+    try:
+        result = pd.read_excel(path_to_excel)
+        return result
+    except FileNotFoundError as e:
+        print(f"Ошибка: {str(e)}")
+        return {}
 
 
 def filter_dataframe_by_date(data_frame: DataFrame, date_and_time: str) -> DataFrame:
