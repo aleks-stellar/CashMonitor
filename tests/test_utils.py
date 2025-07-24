@@ -1,5 +1,8 @@
 from pathlib import Path
 from unittest.mock import Mock, patch
+
+from pandas.core.interchange.dataframe_protocol import DataFrame
+
 from src.utils import get_dataframe_from_excel
 
 PATH_TO_EXCEL_FILE = Path("..", "data", "operations.xlsx")
@@ -7,7 +10,7 @@ INVALID_PATH_TO_EXCEL_FILE = Path("operations.xlsx")
 
 
 @patch("pandas.read_excel")
-def test_get_dataframe_from_excel_valid(mock_read_excel, transactions_dataframe) -> None:
+def test_get_dataframe_from_excel_valid(mock_read_excel: Mock, transactions_dataframe: DataFrame) -> None:
     """Тестирует работу функции get_dataframe_from_excel с корректным путем к файлу"""
     data = transactions_dataframe
     mock_read_excel.return_value = data

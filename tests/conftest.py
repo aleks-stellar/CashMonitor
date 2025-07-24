@@ -112,4 +112,3 @@ def transactions_dataframe() -> dict:
             "186"
         ]
     }
-
