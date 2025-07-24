@@ -32,9 +32,6 @@ exclude = '''
 )
 '''
 
-[tool.isort]
-line-length = 119
-
 [tool.mypy]
 disallow_untyped_defs = true
 warn_return_any = true
