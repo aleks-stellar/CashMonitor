@@ -45,14 +45,33 @@ def filter_dataframe_by_date(data_frame: DataFrame, date_and_time: str) -> DataF
         return pd.DataFrame()
 
 
-# def get_time_greeting() -> str:
-#     """
-#     Возвращает приветствие согласно текущему времени.
-#     :return: Приветствие.
-#     """
-#     pass
-#
-#
+def get_time_greeting(hour: int = 0, minute: int = 0, second: int = 0) -> str:
+    """
+    Возвращает приветствие согласно текущему времени.
+    :hour: Час для замены.
+    :minute: Минута для замены.
+    :second: Секунда для замены.
+    :return: Приветствие.
+    """
+    time_now = datetime.now().time()
+
+    # Строка для замены текущего времени при необходимости и для упрощения тестирования
+    time_now = time_now.replace(hour=hour, minute=minute, second=second)
+    breakfast = datetime.strptime("06:00:00", "%H:%M:%S").time()
+    lunch = datetime.strptime("12:00:00", "%H:%M:%S").time()
+    dinner = datetime.strptime("18:00:00", "%H:%M:%S").time()
+
+    print(time_now)
+    if breakfast <= time_now < lunch:
+        return "Доброе утро"
+    elif lunch <= time_now < dinner:
+        return "Добрый день"
+    elif time_now >= dinner:
+        return "Добрый вечер"
+    else:
+        return "Доброй ночи"
+
+
 # def get_last_digits(dt_frame: DataFrame) -> str:
 #     """
 #     Извлекает последние 4 цифры карты из DataFrame.
