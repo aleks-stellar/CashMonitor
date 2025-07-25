@@ -6,7 +6,8 @@ import pandas.testing
 import pytest
 from pandas import DataFrame
 
-from src.utils import (filter_dataframe_by_date, get_dataframe_from_excel,
+from src.utils import (calculate_total_spend_and_cashback,
+                       filter_dataframe_by_date, get_dataframe_from_excel,
                        get_time_greeting)
 
 PATH_TO_EXCEL_FILE = Path("..", "data", "operations.xlsx")
@@ -72,3 +73,26 @@ def test_filter_dataframe_by_date_invalid_date(
 def test_get_time_greeting(hour: int, minute: int, second: int, expected: str) -> None:
     """ Тестирует работу функции get_time_greeting с различными вариантами текущего времени """
     assert get_time_greeting(hour, minute, second) == expected
+
+
+# Тесты для calculate_total_spend_and_cashback
+def test_calculate_total_spend_and_cashback_valid(
+        transactions_dataframe: DataFrame, dataframe_calculate_spend_and_cashback: DataFrame
+) -> None:
+    """ Тестирует работу функции calculate_total_spend_and_cashback с корректным DataFrame """
+    df_data = pd.DataFrame(transactions_dataframe)
+    expected_df = (
+        pd.DataFrame(dataframe_calculate_spend_and_cashback).sort_values(by="Номер карты").reset_index(drop=True)
+    )
+    actual_df = calculate_total_spend_and_cashback(df_data).sort_values(by="Номер карты").reset_index(drop=True)
+    pandas.testing.assert_frame_equal(actual_df, expected_df, check_dtype=False)
+
+
+def test_calculate_total_spend_and_cashback_empty(
+        transactions_dataframe_empty: DataFrame, dataframe_calculate_spend_and_cashback_empty: DataFrame
+) -> None:
+    """ Тестирует работу функции calculate_total_spend_and_cashback с пустым DataFrame """
+    df_data = pd.DataFrame(transactions_dataframe_empty)
+    expected_df = pd.DataFrame(dataframe_calculate_spend_and_cashback_empty)
+    actual_df = calculate_total_spend_and_cashback(df_data)
+    pandas.testing.assert_frame_equal(actual_df, expected_df, check_dtype=False)

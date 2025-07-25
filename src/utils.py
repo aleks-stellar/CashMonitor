@@ -5,6 +5,7 @@ import pandas as pd
 from pandas import DataFrame
 
 
+# Функции для модуля views
 def get_dataframe_from_excel(path_to_excel: Path) -> DataFrame | dict[None, None]:
     """
     Читает EXCEL-файл и конвертирует его в DataFrame.
@@ -72,15 +73,25 @@ def get_time_greeting(hour: int = 0, minute: int = 0, second: int = 0) -> str:
         return "Доброй ночи"
 
 
-# def get_last_digits(dt_frame: DataFrame) -> str:
-#     """
-#     Извлекает последние 4 цифры карты из DataFrame.
-#     :param dt_frame: DataFrame с данными о транзакциях.
-#     :return: Последние 4 цифры карты в формате *XXXX.
-#     """
-#     pass
-#
-#
+def calculate_total_spend_and_cashback(dt_frame: DataFrame) -> DataFrame:
+    """
+    Принимает DataFrame и возвращает DataFrame, в котором посчитаны сумма всех операций
+    и суммарный кэшбэк по каждой карте.
+    :param dt_frame: DataFrame с данными о транзакциях.
+    :return: DataFrame с данными о сумме всех операций и суммарном кэшбэке по картам.
+    """
+    # Удаляем пустые номера карт
+    dt_frame = dt_frame[dt_frame["Номер карты"].str.strip().astype(bool)].copy()
+
+    # Обработка NaN в кэшбэке (иначе sum сломается)
+    dt_frame["Кэшбэк"] = pd.to_numeric(dt_frame["Кэшбэк"], errors="coerce").fillna(0)
+    dt_frame["Сумма платежа"] = pd.to_numeric(dt_frame["Сумма платежа"], errors="coerce")
+
+    card_number_grouped = dt_frame.groupby("Номер карты")
+    spend_cashback_sum = card_number_grouped[["Сумма платежа", "Кэшбэк"]].sum()
+    return spend_cashback_sum.reset_index()
+
+
 # def calculate_total_spend_by_card_number(dt_frame: DataFrame, card_number_last_digits: str) -> float:
 #     """
 #     Вычисляет сумму расходов по карте из DataFrame.
