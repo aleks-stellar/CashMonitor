@@ -27,6 +27,8 @@ git clone https://github.com/aleks-stellar/CashMonitor
 ```commandline
 poetry install
 ```
+3. Создайте файл .env из копии файла .env.example в корневой директории
+проекта и замените значения переменных реальными данными.
 
 ## Использование
 
