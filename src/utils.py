@@ -83,7 +83,7 @@ def calculate_total_spend_and_cashback(dt_frame: DataFrame) -> DataFrame:
     # Удаляем пустые номера карт
     dt_frame = dt_frame[dt_frame["Номер карты"].str.strip().astype(bool)].copy()
 
-    # Обработка NaN в кэшбэке (иначе sum сломается)
+    # Обработка NaN в кэшбэке
     dt_frame["Кэшбэк"] = pd.to_numeric(dt_frame["Кэшбэк"], errors="coerce").fillna(0)
     dt_frame["Сумма платежа"] = pd.to_numeric(dt_frame["Сумма платежа"], errors="coerce")
 
@@ -92,34 +92,44 @@ def calculate_total_spend_and_cashback(dt_frame: DataFrame) -> DataFrame:
     return spend_cashback_sum.reset_index()
 
 
-# def calculate_total_spend_by_card_number(dt_frame: DataFrame, card_number_last_digits: str) -> float:
-#     """
-#     Вычисляет сумму расходов по карте из DataFrame.
-#     :param dt_frame: DataFrame с данными о транзакциях.
-#     :param card_number_last_digits: Последние 4 цифры карты в формате *XXXX.
-#     :return: Сумма расходов по данной карте.
-#     """
-#     pass
-#
-#
-# def calculate_total_cashback(total_spend: float) -> float:
-#     """
-#     Рассчитывает суммарный кэшбэк по всем операциям за выбранный период.
-#     :param total_spend: Сумма расходов по конкретной карте за выбранный период.
-#     :return: Суммарный кэшбэк по конкретной карте за выбранный период.
-#     """
-#     pass
-#
-#
-# def get_top_five_transactions(dt_frame: DataFrame) -> list[dict]:
-#     """
-#     Составляет список из топ-5 транзакций.
-#     :param dt_frame: DataFrame с данными о транзакциях.
-#     :return: Список топ-5 транзакций (каждая транзакция - словарь).
-#     """
-#     pass
-#
-#
+def get_top_five_transactions(dt_frame: DataFrame) -> list:
+    """
+    Составляет список из топ-5 транзакций.
+    :param dt_frame: DataFrame с данными о транзакциях.
+    :return: Список топ-5 транзакций (каждая транзакция - словарь).
+    """
+    # Преобразуем столбец в числовой формат
+    dt_frame["Сумма платежа"] = pd.to_numeric(dt_frame["Сумма платежа"], errors="coerce")
+
+    # Сортировка происходит по модулю, но значения остаются неизменными
+    df_sorted_by_amount = dt_frame.sort_values(
+        by="Сумма платежа",
+        key=abs,
+        kind="stable",
+        ascending=False
+    ).head(5)
+
+    # Результат - список словарей
+    result_cyrillic = df_sorted_by_amount[
+        ["Дата операции", "Сумма платежа", "Категория", "Описание"]
+    ].to_dict(orient="records")
+
+    # Создаем новый список словарей с другими ключами и изменяем формат даты
+    result_latin = []
+    for string in result_cyrillic:
+        operation_date_obj = datetime.strptime(string["Дата операции"], "%d.%m.%Y %H:%M:%S")
+        operation_date_str = datetime.strftime(operation_date_obj, "%d.%m.%Y")
+        result_latin.append(
+            {
+                "date": operation_date_str,
+                "amount": string["Сумма платежа"],
+                "category": string["Категория"],
+                "description": string["Описание"]}
+        )
+
+    return result_latin
+
+
 # def get_user_currency_rate_by_url(
 #         url_for_currency_rate: str,
 #         api_for_currency_rate: str,

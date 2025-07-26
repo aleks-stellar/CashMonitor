@@ -8,7 +8,7 @@ from pandas import DataFrame
 
 from src.utils import (calculate_total_spend_and_cashback,
                        filter_dataframe_by_date, get_dataframe_from_excel,
-                       get_time_greeting)
+                       get_time_greeting, get_top_five_transactions)
 
 PATH_TO_EXCEL_FILE = Path("..", "data", "operations.xlsx")
 INVALID_PATH_TO_EXCEL_FILE = Path("operations.xlsx")
@@ -96,3 +96,22 @@ def test_calculate_total_spend_and_cashback_empty(
     expected_df = pd.DataFrame(dataframe_calculate_spend_and_cashback_empty)
     actual_df = calculate_total_spend_and_cashback(df_data)
     pandas.testing.assert_frame_equal(actual_df, expected_df, check_dtype=False)
+
+
+# Тесты для get_top_five_transactions
+def test_get_top_five_transactions_valid(
+        transactions_dataframe: DataFrame, transactions_top_five: list[dict]
+) -> None:
+    """ Тестирует работу функции get_top_five_transactions с корректными параметрами """
+    df_data = pd.DataFrame(transactions_dataframe)
+    actual_result = get_top_five_transactions(df_data)
+    expected_result = transactions_top_five
+    assert actual_result == expected_result
+
+
+def test_get_top_five_transactions_empty() -> None:
+    """ Тестирует работу функции get_top_five_transactions с пустым DataFrame """
+    df_data = pd.DataFrame({"Дата операции": [], "Сумма платежа": [], "Категория": [], "Описание": []})
+    actual_result = get_top_five_transactions(df_data)
+    expected_result: list = []
+    assert actual_result == expected_result
