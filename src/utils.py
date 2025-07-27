@@ -73,7 +73,7 @@ def get_time_greeting(hour: int = 0, minute: int = 0, second: int = 0) -> str:
         return "Доброй ночи"
 
 
-def calculate_total_spend_and_cashback(dt_frame: DataFrame) -> DataFrame:
+def calculate_total_spent_and_cashback(dt_frame: DataFrame) -> DataFrame:
     """
     Принимает DataFrame и возвращает DataFrame, в котором посчитаны сумма всех операций
     и суммарный кэшбэк по каждой карте.
@@ -83,13 +83,129 @@ def calculate_total_spend_and_cashback(dt_frame: DataFrame) -> DataFrame:
     # Удаляем пустые номера карт
     dt_frame = dt_frame[dt_frame["Номер карты"].str.strip().astype(bool)].copy()
 
+    # Убираем символ * из номеров карт
+    dt_frame["Номер карты"] = dt_frame["Номер карты"].str.replace("*", "", regex=False).str.strip()
+
     # Обработка NaN в кэшбэке
     dt_frame["Кэшбэк"] = pd.to_numeric(dt_frame["Кэшбэк"], errors="coerce").fillna(0)
     dt_frame["Сумма платежа"] = pd.to_numeric(dt_frame["Сумма платежа"], errors="coerce")
 
     card_number_grouped = dt_frame.groupby("Номер карты")
-    spend_cashback_sum = card_number_grouped[["Сумма платежа", "Кэшбэк"]].sum()
-    return spend_cashback_sum.reset_index()
+    spend_cashback_sum_cyrillic = card_number_grouped[["Сумма платежа", "Кэшбэк"]].sum()
+    spend_cashback_sum_latin = spend_cashback_sum_cyrillic.rename(columns={
+        "Номер карты": "last_digits", "Сумма платежа": "total_spent", "Кэшбэк": "cashback"
+    }).rename_axis("last_digits")
+    return spend_cashback_sum_latin.reset_index()
+
+
+df = pd.DataFrame({
+        "Дата операции": [
+            "31.12.2021 16:44:00",
+            "28.12.2021 18:24:24",
+            "25.12.2021 15:30:02",
+            "22.12.2021 22:59:48",
+            "19.12.2021 18:38:09"
+        ],
+        "Дата платежа": [
+            "31.12.2021",
+            "28.12.2021",
+            "25.12.2021",
+            "23.12.2021",
+            "19.12.2021"
+        ],
+        "Номер карты": [
+            "*7197",
+            "*5091",
+            "*7197",
+            "*5091",
+            ""
+        ],
+        "Статус": [
+            "OK",
+            "OK",
+            "OK",
+            "OK",
+            "OK"
+        ],
+        "Сумма операции": [
+            "-160.89",
+            "-210",
+            "-5.70",
+            "-50",
+            "-186"
+        ],
+        "Валюта операции": [
+            "RUB",
+            "RUB",
+            "RUB",
+            "RUB",
+            "RUB"
+        ],
+        "Сумма платежа": [
+            "-160.89",
+            "-210",
+            "-5.70",
+            "-50",
+            "-186"
+        ],
+        "Валюта платежа": [
+            "RUB",
+            "RUB",
+            "RUB",
+            "RUB",
+            "RUB"
+        ],
+        "Кэшбэк": [
+            "",
+            "",
+            "",
+            "",
+            ""
+        ],
+        "Категория": [
+            "Супермаркеты",
+            "Дом и ремонт",
+            "Каршеринг",
+            "Каршеринг",
+            "Переводы"
+        ],
+        "MCC": [
+            "5411",
+            "5200",
+            "7512",
+            "7512",
+            ""
+        ],
+        "Описание": [
+            "Колхоз",
+            "Галамарт",
+            "Ситидрайв",
+            "Ситидрайв",
+            "Андрей Х."
+        ],
+        "Бонусы (включая кэшбэк)": [
+            "3",
+            "2",
+            "0",
+            "2",
+            "0"
+        ],
+        "Округление на инвесткопилку": [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+        ],
+        "Сумма операции с округлением": [
+            "160.89",
+            "210",
+            "5.7",
+            "50",
+            "186"
+        ]
+    })
+print(calculate_total_spent_and_cashback(df))
 
 
 def get_top_five_transactions(dt_frame: DataFrame) -> list:
@@ -147,8 +263,8 @@ def get_top_five_transactions(dt_frame: DataFrame) -> list:
 #     :return: Словарь (ключ - код валюты, значение - результат перевода).
 #     """
 #     pass
-#
-#
+
+
 # def get_user_currency_rates(path_to_user_settings: Path) -> list[dict]:
 #     """
 #     Получает курс валют пользователя.
