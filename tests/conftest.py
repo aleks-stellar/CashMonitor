@@ -118,9 +118,7 @@ def transactions_dataframe() -> dict:
 
 @pytest.fixture
 def transactions_dataframe_empty() -> dict:
-    """
-    Фикстура, возвращающая DataFrame без номеров карт.
-    """
+    """ Фикстура, возвращающая DataFrame без номеров карт. """
     return {
         "Дата операции": [
             "31.12.2021 16:44:00",
@@ -257,10 +255,8 @@ def filtered_by_data_transactions_dataframe() -> dict:
 
 @pytest.fixture
 def dataframe_calculate_spent_and_cashback() -> dict:
-    """
-    Фикстура, возвращающая DataFrame, сгруппированный по номерам карт,
-    подчитывающий сумму всех операций и суммарном кэшбэк по картам.
-    """
+    """ Фикстура, возвращающая DataFrame, сгруппированный по номерам карт,
+    подчитывающий сумму всех операций и суммарном кэшбэк по картам. """
     return {
         "last_digits": ["7197", "5091"],
         "total_spent": [-166.59, -260.0],
@@ -270,9 +266,7 @@ def dataframe_calculate_spent_and_cashback() -> dict:
 
 @pytest.fixture
 def dataframe_calculate_spent_and_cashback_empty() -> dict:
-    """
-    Фикстура, возвращающая пустой DataFrame (полученный после группировки DataFrame без номеров карт)
-    """
+    """ Фикстура, возвращающая пустой DataFrame (полученный после группировки DataFrame без номеров карт). """
     return {
         "last_digits": [],
         "total_spent": [],
@@ -282,9 +276,7 @@ def dataframe_calculate_spent_and_cashback_empty() -> dict:
 
 @pytest.fixture
 def transactions_top_five() -> list[dict]:
-    """
-    Фикстура, возвращающая список из топ-5 транзакций.
-    """
+    """ Фикстура, возвращающая список из топ-5 транзакций. """
     return [
         {'date': '28.12.2021', 'amount': -210.0, 'category': 'Дом и ремонт', 'description': 'Галамарт'},
         {'date': '19.12.2021', 'amount': -186.0, 'category': 'Переводы', 'description': 'Андрей Х.'},
