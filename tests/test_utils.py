@@ -1,4 +1,3 @@
-from pathlib import Path
 from unittest.mock import Mock, patch
 
 import pandas as pd
@@ -8,9 +7,7 @@ from pandas import DataFrame
 
 from src.utils import (calculate_total_spent_and_cashback, filter_dataframe_by_date, get_dataframe_from_excel,
                        get_time_greeting, get_top_five_transactions)
-
-PATH_TO_EXCEL_FILE = Path("..", "data", "operations.xlsx")
-INVALID_PATH_TO_EXCEL_FILE = Path("operations.xlsx")
+from config.paths import PATH_TO_EXCEL_FILE, INVALID_PATH_TO_EXCEL_FILE
 
 
 # Тесты для функции get_dataframe_from_excel

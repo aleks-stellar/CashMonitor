@@ -1,0 +1,1 @@
+URL_CURRENCY="https://api.exchangeratesapi.io/v1/"

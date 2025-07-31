@@ -136,23 +136,23 @@ def get_top_five_transactions(dt_frame: DataFrame) -> list:
     return result_latin
 
 
-# def get_user_currency_rate_by_url(
-#         url_for_currency_rate: str,
-#         api_for_currency_rate: str,
-#         currency_from_amount: str,
-#         currency_from: str,
-#         currency_to: str
-# ) -> dict:
-#     """
-#     Получает актуальный курс валюты по API.
-#     :param url_for_currency_rate: URL для получения актуального курса валюты.
-#     :param api_for_currency_rate: API для получения актуального курса валюты.
-#     :param currency_from_amount: Сумма в исходной валюте.
-#     :param currency_from: Валюта, из которой осуществляется перевод.
-#     :param currency_to: Валюта, в которую необходимо перевести.
-#     :return: Словарь (ключ - код валюты, значение - результат перевода).
-#     """
-#     pass
+def get_user_currency_rate_by_url(
+        url_for_currency_rate: str,
+        api_for_currency_rate: str,
+        currency_from: str,
+        currency_from_amount: int = 1,
+        currency_to: str = "RUB"
+) -> dict:
+    """
+    Получает актуальный курс валюты по API.
+    :param url_for_currency_rate: URL для получения актуального курса валюты.
+    :param api_for_currency_rate: API для получения актуального курса валюты.
+    :param currency_from_amount: Сумма в исходной валюте.
+    :param currency_from: Валюта, из которой осуществляется перевод.
+    :param currency_to: Валюта, в которую необходимо перевести.
+    :return: Словарь (ключ - код валюты, значение - результат перевода).
+    """
+    pass
 
 
 # def get_user_currency_rates(path_to_user_settings: Path) -> list[dict]:
