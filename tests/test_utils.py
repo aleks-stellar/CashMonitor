@@ -74,7 +74,7 @@ def test_get_time_greeting(hour: int, minute: int, second: int, expected: str) -
     assert get_time_greeting(hour, minute, second) == expected
 
 
-# Тесты для calculate_total_spend_and_cashback
+# Тесты для calculate_total_spent_and_cashback
 def test_calculate_total_spent_and_cashback_valid(
         transactions_dataframe: DataFrame, dataframe_calculate_spent_and_cashback: DataFrame
 ) -> None:
