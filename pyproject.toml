@@ -15,6 +15,7 @@ pytest = "^8.4.1"
 pytest-cov = "^6.2.1"
 python-dotenv = "^1.1.1"
 pandas-stubs = "^2.3.0.250703"
+types-requests = "^2.32.4.20250611"
 
 [tool.poetry.group.lint.dependencies]
 flake8 = "^7.3.0"
