@@ -3,11 +3,12 @@ from unittest.mock import Mock, patch
 import pandas as pd
 import pandas.testing
 import pytest
+import requests
 from pandas import DataFrame
 
+from config.paths import INVALID_PATH_TO_EXCEL_FILE, PATH_TO_EXCEL_FILE
 from src.utils import (calculate_total_spent_and_cashback, filter_dataframe_by_date, get_dataframe_from_excel,
-                       get_time_greeting, get_top_five_transactions)
-from config.paths import PATH_TO_EXCEL_FILE, INVALID_PATH_TO_EXCEL_FILE
+                       get_time_greeting, get_top_five_transactions, get_user_currency_rate_by_url)
 
 
 # Тесты для функции get_dataframe_from_excel
@@ -110,4 +111,56 @@ def test_get_top_five_transactions_empty() -> None:
     df_data = pd.DataFrame({"Дата операции": [], "Сумма платежа": [], "Категория": [], "Описание": []})
     actual_result = get_top_five_transactions(df_data)
     expected_result: list = []
+    assert actual_result == expected_result
+
+
+# Тесты для get_user_currency_rate_by_url
+@patch("requests.get")
+def test_get_user_currency_rate_by_url_valid(mock_request: Mock, currency_response_example: dict) -> None:
+    """ Тестирует работы функции get_user_currency_rate_by_url с корректными данными. """
+    mock_request.return_value.json.return_value = currency_response_example
+    expected_result = 1490.0
+    actual_result = get_user_currency_rate_by_url(
+        currency_from="USD",
+        currency_to="RUB",
+        currency_from_amount=10
+    )
+    assert actual_result == expected_result
+
+
+@patch("os.getenv")
+def test_get_user_currency_rate_by_url_without_apikey(mock_getenv: Mock) -> None:
+    """ Тестирует работы функции get_user_currency_rate_by_url без API-ключа. """
+    mock_getenv.return_value = None
+    actual_result = get_user_currency_rate_by_url(
+        currency_from="USD",
+        currency_to="RUB",
+        currency_from_amount=10
+    )
+    assert actual_result is None
+
+
+@patch("requests.get")
+def test_get_user_currency_rate_by_url_exception(mock_request: Mock) -> None:
+    """ Тестирует работы функции get_user_currency_rate_by_url с неопределенной ошибкой RequestException. """
+    mock_request.side_effect = requests.RequestException
+    expected_result = None
+    actual_result = get_user_currency_rate_by_url(
+        currency_from="USD",
+        currency_to="RUB",
+        currency_from_amount=10
+    )
+    assert actual_result == expected_result
+
+
+@patch("requests.get")
+def test_get_user_currency_rate_by_url_without_key(mock_request: Mock) -> None:
+    """ Тестирует работы функции get_user_currency_rate_by_url без необходимого ключа. """
+    mock_request.return_value.json.return_value = {"success": True}
+    expected_result = None
+    actual_result = get_user_currency_rate_by_url(
+        currency_from="USD",
+        currency_to="RUB",
+        currency_from_amount=10
+    )
     assert actual_result == expected_result

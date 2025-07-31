@@ -284,3 +284,23 @@ def transactions_top_five() -> list[dict]:
         {'date': '22.12.2021', 'amount': -50.0, 'category': 'Каршеринг', 'description': 'Ситидрайв'},
         {'date': '25.12.2021', 'amount': -5.7, 'category': 'Каршеринг', 'description': 'Ситидрайв'}
     ]
+
+
+@pytest.fixture
+def currency_response_example() -> dict:
+    """ Фикстура, возвращающая пример ответа сервера, конвертирующего валюту. """
+    return {
+        "date": "2018-02-22",
+        "historical": "",
+        "info": {
+            "rate": 149.0,
+            "timestamp": 1000000000
+        },
+        "query": {
+            "amount": 25,
+            "from": "USD",
+            "to": "RUB"
+        },
+        "result": 1490.0,
+        "success": True
+    }

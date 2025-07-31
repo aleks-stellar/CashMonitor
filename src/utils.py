@@ -1,8 +1,14 @@
+import os
 from datetime import datetime
 from pathlib import Path
+from typing import Union
 
 import pandas as pd
+import requests
+from dotenv import load_dotenv
 from pandas import DataFrame
+
+from config.settings import URL_CURRENCY
 
 
 # Функции для модуля views
@@ -137,22 +143,44 @@ def get_top_five_transactions(dt_frame: DataFrame) -> list:
 
 
 def get_user_currency_rate_by_url(
-        url_for_currency_rate: str,
-        api_for_currency_rate: str,
         currency_from: str,
         currency_from_amount: int = 1,
         currency_to: str = "RUB"
-) -> dict:
+) -> Union[float, None]:
     """
     Получает актуальный курс валюты по API.
-    :param url_for_currency_rate: URL для получения актуального курса валюты.
-    :param api_for_currency_rate: API для получения актуального курса валюты.
-    :param currency_from_amount: Сумма в исходной валюте.
     :param currency_from: Валюта, из которой осуществляется перевод.
+    :param currency_from_amount: Сумма в исходной валюте currency_from.
     :param currency_to: Валюта, в которую необходимо перевести.
-    :return: Словарь (ключ - код валюты, значение - результат перевода).
+    :return: Сумма в валюте currency_to.
     """
-    pass
+    try:
+        load_dotenv()
+        apikey = os.getenv("API_KEY_CURRENCY")
+        if not apikey:
+            raise ValueError("API_KEY_CURRENCY не найден в .env файле")
+
+        url_currency = URL_CURRENCY
+
+        params: dict = {
+            "from": currency_from,
+            "to": currency_to,
+            "amount": currency_from_amount
+        }
+        headers = {"apikey": apikey}
+
+        response = requests.get(url=url_currency, headers=headers, params=params)
+        response.raise_for_status()
+        data = response.json()
+
+        if "result" not in data:
+            raise ValueError("Некорректный формат ответа API: нет ключа 'result'")
+
+        return float(data["result"])
+
+    except (requests.RequestException, requests.HTTPError, ValueError) as e:
+        print(f"[Ошибка] Не удалось получить курс валюты: {e}")
+        return None
 
 
 # def get_user_currency_rates(path_to_user_settings: Path) -> list[dict]:
