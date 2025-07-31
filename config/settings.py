@@ -1,1 +1,1 @@
-URL_CURRENCY="https://api.exchangeratesapi.io/v1/"
+URL_CURRENCY="https://api.apilayer.com/exchangerates_data/convert"
