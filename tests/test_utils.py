@@ -1,4 +1,5 @@
 import json
+from datetime import time, datetime
 from unittest.mock import Mock, mock_open, patch
 
 import pandas as pd
@@ -71,7 +72,14 @@ def test_filter_dataframe_by_date_invalid_date(
 ])
 def test_get_time_greeting(hour: int, minute: int, second: int, expected: str) -> None:
     """ Тестирует работу функции get_time_greeting с различными вариантами текущего времени. """
-    assert get_time_greeting(hour, minute, second) == expected
+    fake_datetime = datetime(2023, 1, 1, hour, minute, second)
+
+    with patch("src.utils.datetime") as mock_datetime:
+        mock_datetime.now.return_value = fake_datetime
+        mock_datetime.strptime = datetime.strptime
+
+        result = get_time_greeting()
+        assert result == expected
 
 
 # Тесты для calculate_total_spent_and_cashback
