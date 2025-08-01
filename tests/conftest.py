@@ -1,3 +1,4 @@
+import pandas as pd
 import pytest
 
 
@@ -9,11 +10,11 @@ def transactions_dataframe() -> dict:
     """
     return {
         "Дата операции": [
-            "31.12.2021 16:44:00",
-            "28.12.2021 18:24:24",
-            "25.12.2021 15:30:02",
-            "22.12.2021 22:59:48",
-            "19.12.2021 18:38:09"
+            pd.Timestamp("31.12.2021 16:44:00"),
+            pd.Timestamp("28.12.2021 18:24:24"),
+            pd.Timestamp("25.12.2021 15:30:02"),
+            pd.Timestamp("22.12.2021 22:59:48"),
+            pd.Timestamp("19.12.2021 18:38:09")
         ],
         "Дата платежа": [
             "31.12.2021",
@@ -278,11 +279,11 @@ def dataframe_calculate_spent_and_cashback_empty() -> dict:
 def transactions_top_five() -> list[dict]:
     """ Фикстура, возвращающая список из топ-5 транзакций. """
     return [
-        {'date': '28.12.2021', 'amount': -210.0, 'category': 'Дом и ремонт', 'description': 'Галамарт'},
-        {'date': '19.12.2021', 'amount': -186.0, 'category': 'Переводы', 'description': 'Андрей Х.'},
-        {'date': '31.12.2021', 'amount': -160.89, 'category': 'Супермаркеты', 'description': 'Колхоз'},
-        {'date': '22.12.2021', 'amount': -50.0, 'category': 'Каршеринг', 'description': 'Ситидрайв'},
-        {'date': '25.12.2021', 'amount': -5.7, 'category': 'Каршеринг', 'description': 'Ситидрайв'}
+        {'date': '28.12.2021', 'amount': 210.0, 'category': 'Дом и ремонт', 'description': 'Галамарт'},
+        {'date': '19.12.2021', 'amount': 186.0, 'category': 'Переводы', 'description': 'Андрей Х.'},
+        {'date': '31.12.2021', 'amount': 160.89, 'category': 'Супермаркеты', 'description': 'Колхоз'},
+        {'date': '22.12.2021', 'amount': 50.0, 'category': 'Каршеринг', 'description': 'Ситидрайв'},
+        {'date': '25.12.2021', 'amount': 5.7, 'category': 'Каршеринг', 'description': 'Ситидрайв'}
     ]
 
 
