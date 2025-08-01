@@ -9,7 +9,7 @@ from pandas import DataFrame
 from config.paths import INVALID_PATH_TO_EXCEL_FILE, PATH_TO_EXCEL_FILE
 from src.utils import (calculate_total_spent_and_cashback, filter_dataframe_by_date, get_dataframe_from_excel,
                        get_time_greeting, get_top_five_transactions, get_user_currency_rate_by_url,
-                       get_user_currency_rates)
+                       get_user_currency_rates, get_user_stock_rate_by_url)
 
 
 # Тесты для функции get_dataframe_from_excel
@@ -178,3 +178,72 @@ def test_get_user_currency_rates(mock_open_file: Mock, mock_get_rate: Mock) -> N
         {"currency": "USD", "rate": 100.5},
         {"currency": "EUR", "rate": 120.75}
     ]
+
+
+# Тесты для функции get_user_stock_rate_by_url
+@patch("src.utils.get_user_currency_rate_by_url")
+@patch("requests.get")
+@patch("os.getenv")
+def test_get_user_stock_rate_by_url_valid(
+        mock_getenv: Mock,
+        mock_request: Mock,
+        mock_get_rate: Mock,
+        stocks_response_example: dict) -> None:
+    """ Тестирует работу функции get_user_stock_rate_by_url с корректными данными. """
+    mock_getenv.return_value = True
+    mock_request.return_value.json.return_value = stocks_response_example
+    mock_get_rate.side_effect = [13299.5]
+    result = get_user_stock_rate_by_url("AAPL")
+    expected_result = 13299.5
+    assert result == expected_result
+
+
+@patch("os.getenv")
+def test_get_user_stock_rate_by_url_without_api_key(
+        mock_getenv: Mock) -> None:
+    """ Тестирует работу функции get_user_stock_rate_by_url без API-ключа. """
+    mock_getenv.return_value = None
+    result = get_user_stock_rate_by_url("AAPL")
+    assert result is None
+
+
+@patch("requests.get")
+@patch("os.getenv")
+def test_get_user_stock_rate_by_url_without_close_key(
+        mock_getenv: Mock,
+        mock_request: Mock
+) -> None:
+    """ Тестирует работу функции get_user_stock_rate_by_url с некорректным ответом от сервера. """
+    mock_getenv.return_value = True
+    mock_request.return_value.json.return_value = {"data": [{"open": 129.8}]}
+    result = get_user_stock_rate_by_url("AAPL")
+    assert result is None
+
+
+@patch("requests.get")
+@patch("os.getenv")
+def test_get_user_stock_rate_by_url_without_data_key(
+        mock_getenv: Mock,
+        mock_request: Mock
+) -> None:
+    """ Тестирует работу функции get_user_stock_rate_by_url с некорректным ответом от сервера. """
+    mock_getenv.return_value = True
+    mock_request.return_value.json.return_value = {"open": 129.8}
+    result = get_user_stock_rate_by_url("AAPL")
+    assert result is None
+
+
+@patch("src.utils.get_user_currency_rate_by_url")
+@patch("requests.get")
+@patch("os.getenv")
+def test_get_user_stock_rate_by_url_none_rate(
+        mock_getenv: Mock,
+        mock_request: Mock,
+        mock_get_rate: Mock,
+        stocks_response_example: dict) -> None:
+    """ Тестирует работу функции get_user_stock_rate_by_url, принимающую курс валюты None. """
+    mock_getenv.return_value = True
+    mock_request.return_value.json.return_value = stocks_response_example
+    mock_get_rate.return_value = None
+    result = get_user_stock_rate_by_url("AAPL")
+    assert result is None

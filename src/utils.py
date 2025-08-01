@@ -10,7 +10,7 @@ from dotenv import load_dotenv
 from pandas import DataFrame
 
 from config.paths import PATH_TO_USER_SETTINGS
-from config.settings import URL_CURRENCY
+from config.settings import URL_CURRENCY, URL_STOCK
 
 
 # Функции для модуля views
@@ -201,21 +201,51 @@ def get_user_currency_rates() -> list[dict[str, Union[str, float, None]]]:
     return result
 
 
-# def get_user_stock_rate_by_url(
-#         url_for_stock_rate: str,
-#         api_for_stock_rate: str,
-#         stock_ticker: str,
-# ) -> dict:
-#     """
-#     Получает актуальный курс акции по API.
-#     :param url_for_stock_rate: URL для получения актуального курса акции.
-#     :param api_for_stock_rate: API для получения актуального курса акции.
-#     :param stock_ticker: Тикер акции.
-#     :return: Словарь (ключ - тикер, значение - текущая стоимость акции).
-#     """
-#     pass
-#
-#
+def get_user_stock_rate_by_url(
+        stock_ticker: str,
+) -> Union[float, None]:
+    """
+    Получает актуальный курс акции по API.
+    :param stock_ticker: Тикер акции.
+    :return: Текущий курс акции stock_ticker.
+    """
+    try:
+        load_dotenv()
+        api_key = os.getenv("API_KEY_STOCKS")
+        if not api_key:
+            raise ValueError("API_KEY_STOCKS не найден в .env файле")
+
+        params: dict = {
+            "access_key": api_key,
+            "symbols": stock_ticker,
+            "limit": 1
+        }
+
+        response = requests.get(url=URL_STOCK, params=params)
+        response.raise_for_status()
+        data = response.json()
+
+        if "data" not in data or not data["data"]:
+            raise ValueError("Некорректный формат ответа API: нет данных")
+
+        close_price = data["data"][0].get("close")
+        if close_price is None:
+            raise ValueError("Нет цены закрытия (close) в ответе API")
+
+        close_price_rub = get_user_currency_rate_by_url(
+            currency_from="USD",
+            currency_from_amount=close_price
+        )
+        if close_price_rub is None:
+            return None
+        else:
+            return float(round(close_price_rub, 2))
+
+    except (requests.RequestException, requests.HTTPError, ValueError) as e:
+        print(f"[Ошибка] Не удалось получить курс акции: {e}")
+        return None
+
+
 # def get_user_stock_rates(path_to_user_settings: Path) -> list[dict]:
 #     """
 #     Получает текущий курс акций пользователя из S&P500.
