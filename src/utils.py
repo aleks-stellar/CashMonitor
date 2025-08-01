@@ -10,7 +10,7 @@ import requests
 from dotenv import load_dotenv
 from pandas import DataFrame
 
-from config.paths import PATH_TO_USER_SETTINGS, PATH_TO_LOG_FILE, PATH_TO_LOG_DIR, PATH_TO_EXCEL_FILE
+from config.paths import PATH_TO_LOG_DIR, PATH_TO_LOG_FILE, PATH_TO_USER_SETTINGS
 from config.settings import URL_CURRENCY, URL_STOCK
 
 os.makedirs(PATH_TO_LOG_DIR, exist_ok=True)
