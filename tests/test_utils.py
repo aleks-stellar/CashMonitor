@@ -25,7 +25,7 @@ def test_get_dataframe_from_excel_valid(mock_read_excel: Mock, transactions_data
 
 def test_get_dataframe_from_excel_invalid_path() -> None:
     """ Тестирует работу функции get_dataframe_from_excel с некорректным путем к файлу. """
-    assert get_dataframe_from_excel(INVALID_PATH_TO_EXCEL_FILE) == {}
+    assert get_dataframe_from_excel(INVALID_PATH_TO_EXCEL_FILE).empty
 
 
 # Тесты для функции filter_dataframe_by_date

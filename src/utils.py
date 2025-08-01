@@ -38,7 +38,7 @@ stock_api_logger.addHandler(stock_api_handler)
 
 
 # Функции для модуля views
-def get_dataframe_from_excel(path_to_excel: Path) -> DataFrame | dict[None, None]:
+def get_dataframe_from_excel(path_to_excel: Path) -> DataFrame:
     """
     Читает EXCEL-файл и конвертирует его в DataFrame.
     :param path_to_excel: Путь к EXCEL-файлу.
@@ -54,7 +54,7 @@ def get_dataframe_from_excel(path_to_excel: Path) -> DataFrame | dict[None, None
         df_logger.error("File not found...")
         print(f"Ошибка: {str(e)}")
         df_logger.info(f"The function {get_dataframe_from_excel.__name__} has completed with error...")
-        return {}
+        return pd.DataFrame()
 
 
 def filter_dataframe_by_date(data_frame: DataFrame, date_and_time: str) -> DataFrame:
