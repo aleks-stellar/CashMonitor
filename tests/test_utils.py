@@ -1,5 +1,5 @@
 import json
-from datetime import time, datetime
+from datetime import datetime
 from unittest.mock import Mock, mock_open, patch
 
 import pandas as pd
