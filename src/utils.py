@@ -246,10 +246,30 @@ def get_user_stock_rate_by_url(
         return None
 
 
-# def get_user_stock_rates(path_to_user_settings: Path) -> list[dict]:
-#     """
-#     Получает текущий курс акций пользователя из S&P500.
-#     :param path_to_user_settings: Путь к JSON-файлу, в котором хранятся тикеры акций пользователя.
-#     :return: Список, в котором каждый словарь дает информацию о текущем курсе акций пользователя.
-#     """
-#     pass
+def get_user_stock_rates() -> list[dict]:
+    """
+    Получает текущий курс акций пользователя из S&P500.
+    :return: Список словарей (ключ "stock" - тикер, значение "price" - курс акции в рублях).
+    """
+    try:
+        with open(PATH_TO_USER_SETTINGS, encoding="utf-8") as file:
+            data = json.load(file)
+            if "user_stocks" not in data:
+                raise ValueError("Некорректный формат файла <user_settings.json>")
+            user_stocks = data["user_stocks"]
+
+        stock_prices = []
+
+        for ticker in user_stocks:
+            price = get_user_stock_rate_by_url(ticker)
+            stock_prices.append({"stock": ticker, "price": price})
+
+        return stock_prices
+
+    except FileNotFoundError as e:
+        print(f"[Ошибка] {e}.")
+        return []
+
+    except ValueError as e:
+        print(f"[Ошибка] {e}.")
+        return []

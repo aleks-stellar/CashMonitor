@@ -1,3 +1,4 @@
+import json
 from unittest.mock import Mock, mock_open, patch
 
 import pandas as pd
@@ -9,7 +10,7 @@ from pandas import DataFrame
 from config.paths import INVALID_PATH_TO_EXCEL_FILE, PATH_TO_EXCEL_FILE
 from src.utils import (calculate_total_spent_and_cashback, filter_dataframe_by_date, get_dataframe_from_excel,
                        get_time_greeting, get_top_five_transactions, get_user_currency_rate_by_url,
-                       get_user_currency_rates, get_user_stock_rate_by_url)
+                       get_user_currency_rates, get_user_stock_rate_by_url, get_user_stock_rates)
 
 
 # Тесты для функции get_dataframe_from_excel
@@ -247,3 +248,37 @@ def test_get_user_stock_rate_by_url_none_rate(
     mock_get_rate.return_value = None
     result = get_user_stock_rate_by_url("AAPL")
     assert result is None
+
+
+# Тесты для функции get_user_stock_rates
+@patch("src.utils.get_user_stock_rate_by_url")
+@patch("pathlib.Path.exists", return_value=True)
+def test_get_user_stock_rates_valid(
+        mock_path_exists: Mock,
+        mock_get_stocks: Mock,
+        user_stock_rates: list,
+        user_currencies_and_stocks: dict
+) -> None:
+    """ Тестирует работу функции get_user_stock_rates с корректными данными. """
+    json_data = json.dumps(user_currencies_and_stocks)
+    with patch("builtins.open", mock_open(read_data=json_data)):
+        mock_get_stocks.side_effect = [12000.0, 10000.0, 8000.0, 7000.0, 5000.0]
+        result = get_user_stock_rates()
+        assert result == user_stock_rates
+
+
+def test_get_user_stock_rates_missing_key() -> None:
+    """ Тестирует работы функции get_user_stock_rates без ключа user_currencies. """
+    invalid_data = json.dumps({"user_currencies": ["USD"]})
+
+    with patch("pathlib.Path.exists", return_value=True), \
+            patch("builtins.open", mock_open(read_data=invalid_data)):
+        result = get_user_stock_rates()
+        assert result == []
+
+
+def test_get_user_stock_rates_file_not_found() -> None:
+    """ Тестирует работу функции get_user_stock_rates при отсутствии файла. """
+    with patch("builtins.open", side_effect=FileNotFoundError):
+        result = get_user_stock_rates()
+        assert result == []

@@ -336,3 +336,24 @@ def stocks_response_example() -> dict:
             }
         ]
     }
+
+
+@pytest.fixture
+def user_currencies_and_stocks() -> dict:
+    """ Фикстура, возвращающая пример словаря с тикерами акций и кодами валют пользователя. """
+    return {
+        "user_currencies": ["USD", "EUR"],
+        "user_stocks": ["AAPL", "AMZN", "GOOGL", "MSFT", "TSLA"]
+    }
+
+
+@pytest.fixture
+def user_stock_rates() -> list:
+    """ Фикстура, возвращающая пример списка словарей с тикерами акций и их курсом. """
+    return [
+        {"stock": "AAPL", "price": 12000.0},
+        {"stock": "AMZN", "price": 10000.0},
+        {"stock": "GOOGL", "price": 8000.0},
+        {"stock": "MSFT", "price": 7000.0},
+        {"stock": "TSLA", "price": 5000.0}
+    ]
