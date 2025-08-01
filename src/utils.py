@@ -155,12 +155,11 @@ def get_top_five_transactions(dt_frame: DataFrame) -> list:
     # Создаем новый список словарей с другими ключами и изменяем формат даты
     result_latin = []
     for string in result_cyrillic:
-        operation_date_obj = datetime.strptime(string["Дата операции"], "%d.%m.%Y %H:%M:%S")
-        operation_date_str = datetime.strftime(operation_date_obj, "%d.%m.%Y")
+        operation_date_str = string["Дата операции"].strftime("%d.%m.%Y")
         result_latin.append(
             {
                 "date": operation_date_str,
-                "amount": string["Сумма платежа"],
+                "amount": abs(string["Сумма платежа"]),
                 "category": string["Категория"],
                 "description": string["Описание"]}
         )
