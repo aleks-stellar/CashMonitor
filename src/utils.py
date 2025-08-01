@@ -123,6 +123,7 @@ def calculate_total_spent_and_cashback(dt_frame: DataFrame) -> DataFrame:
 
     card_number_grouped = dt_frame.groupby("Номер карты")
     spend_cashback_sum_cyrillic = card_number_grouped[["Сумма платежа", "Кэшбэк"]].sum()
+    spend_cashback_sum_cyrillic["Сумма платежа"] = spend_cashback_sum_cyrillic["Сумма платежа"].abs()
     spend_cashback_sum_latin = spend_cashback_sum_cyrillic.rename(columns={
         "Номер карты": "last_digits", "Сумма платежа": "total_spent", "Кэшбэк": "cashback"
     }).rename_axis("last_digits")

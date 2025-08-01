@@ -259,7 +259,7 @@ def dataframe_calculate_spent_and_cashback() -> dict:
     подчитывающий сумму всех операций и суммарном кэшбэк по картам. """
     return {
         "last_digits": ["7197", "5091"],
-        "total_spent": [-166.59, -260.0],
+        "total_spent": [166.59, 260.0],
         "cashback": [0.0, 0.0]
     }
 
