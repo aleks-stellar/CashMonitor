@@ -1,3 +1,4 @@
+import json
 import os
 from datetime import datetime
 from pathlib import Path
@@ -9,6 +10,7 @@ from dotenv import load_dotenv
 from pandas import DataFrame
 
 from config.settings import URL_CURRENCY
+from config.paths import PATH_TO_USER_SETTINGS
 
 
 # Функции для модуля views
@@ -176,22 +178,29 @@ def get_user_currency_rate_by_url(
         if "result" not in data:
             raise ValueError("Некорректный формат ответа API: нет ключа 'result'")
 
-        return float(data["result"])
+        return round(data["result"], 2)
 
     except (requests.RequestException, requests.HTTPError, ValueError) as e:
         print(f"[Ошибка] Не удалось получить курс валюты: {e}")
         return None
 
 
-# def get_user_currency_rates(path_to_user_settings: Path) -> list[dict]:
-#     """
-#     Получает курс валют пользователя.
-#     :param path_to_user_settings: Путь к JSON-файлу, в котором хранятся коды валют пользователя.
-#     :return: Список, в котором каждый словарь дает информацию о текущем курсе валют пользователя.
-#     """
-#     pass
-#
-#
+def get_user_currency_rates() -> list[Union[dict, None]]:
+    """
+    Получает курс валют пользователя.
+    :return: Список словарей (ключ "currency" - код валюты, значение "rate" - курс валюты к рублю).
+    """
+    with open(PATH_TO_USER_SETTINGS, encoding="utf-8") as file:
+        user_currencies = json.load(file)["user_currencies"]
+
+    result = []
+    for currency in user_currencies:
+        rate = get_user_currency_rate_by_url(currency_from=currency)
+        result.append({"currency": currency, "rate": rate})
+
+    return result
+
+
 # def get_user_stock_rate_by_url(
 #         url_for_stock_rate: str,
 #         api_for_stock_rate: str,
