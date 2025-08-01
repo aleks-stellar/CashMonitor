@@ -9,8 +9,8 @@ import requests
 from dotenv import load_dotenv
 from pandas import DataFrame
 
-from config.settings import URL_CURRENCY
 from config.paths import PATH_TO_USER_SETTINGS
+from config.settings import URL_CURRENCY
 
 
 # Функции для модуля views
@@ -178,14 +178,14 @@ def get_user_currency_rate_by_url(
         if "result" not in data:
             raise ValueError("Некорректный формат ответа API: нет ключа 'result'")
 
-        return round(data["result"], 2)
+        return float(round(data["result"], 2))
 
     except (requests.RequestException, requests.HTTPError, ValueError) as e:
         print(f"[Ошибка] Не удалось получить курс валюты: {e}")
         return None
 
 
-def get_user_currency_rates() -> list[Union[dict, None]]:
+def get_user_currency_rates() -> list[dict[str, Union[str, float, None]]]:
     """
     Получает курс валют пользователя.
     :return: Список словарей (ключ "currency" - код валюты, значение "rate" - курс валюты к рублю).

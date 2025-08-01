@@ -1,4 +1,4 @@
-from unittest.mock import Mock, patch
+from unittest.mock import Mock, mock_open, patch
 
 import pandas as pd
 import pandas.testing
@@ -8,7 +8,8 @@ from pandas import DataFrame
 
 from config.paths import INVALID_PATH_TO_EXCEL_FILE, PATH_TO_EXCEL_FILE
 from src.utils import (calculate_total_spent_and_cashback, filter_dataframe_by_date, get_dataframe_from_excel,
-                       get_time_greeting, get_top_five_transactions, get_user_currency_rate_by_url)
+                       get_time_greeting, get_top_five_transactions, get_user_currency_rate_by_url,
+                       get_user_currency_rates)
 
 
 # Тесты для функции get_dataframe_from_excel
@@ -164,3 +165,16 @@ def test_get_user_currency_rate_by_url_without_key(mock_request: Mock) -> None:
         currency_from_amount=10
     )
     assert actual_result == expected_result
+
+
+# Тесты для функции get_user_currency_rates
+@patch("src.utils.get_user_currency_rate_by_url")
+@patch("builtins.open", new_callable=mock_open, read_data='{"user_currencies": ["USD", "EUR"]}')
+def test_get_user_currency_rates(mock_open_file: Mock, mock_get_rate: Mock) -> None:
+    """ Тестирует работы функции get_user_currency_rates. """
+    mock_get_rate.side_effect = [100.5, 120.75]
+    result = get_user_currency_rates()
+    assert result == [
+        {"currency": "USD", "rate": 100.5},
+        {"currency": "EUR", "rate": 120.75}
+    ]
