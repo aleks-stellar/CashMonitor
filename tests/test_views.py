@@ -34,7 +34,7 @@ def test_main_views_success(
     mock_get_currencies.return_value = [{"currency": "USD", "rate": 93.25}]
     mock_get_stocks.return_value = [{"ticker": "AAPL", "price": 187}]
 
-    result = main_views("2022.01.05 12:00:00")
+    result = main_views("2022-01-05 12:00:00")
 
     assert result == {
         "greeting": "Доброе утро!",

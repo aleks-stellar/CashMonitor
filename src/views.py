@@ -14,7 +14,7 @@ def main_views(date_and_time: str) -> dict:
     :return: JSON-данные за указанный период.
     """
     try:
-        user_date_and_time_obj = datetime.strptime(date_and_time, "%Y.%m.%d %H:%M:%S")
+        user_date_and_time_obj = datetime.strptime(date_and_time, "%Y-%m-%d %H:%M:%S")
         date_and_time_str = datetime.strftime(user_date_and_time_obj, format="%d.%m.%Y %H:%M:%S")
 
         data_frame = get_dataframe_from_excel(path_to_excel=PATH_TO_EXCEL_FILE)
